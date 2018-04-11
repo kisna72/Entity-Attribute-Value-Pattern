@@ -19,12 +19,12 @@ DROP TABLE IF EXISTS entity CASCADE;
 CREATE TABLE entity
 (
     id SERIAL PRIMARY KEY,
-    entity_type_pk integer REFERENCES entity_type (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    entity_type_id integer REFERENCES entity_type (id) ON DELETE CASCADE ON UPDATE CASCADE,
     label text NOT NULL
 );
 -- Add  Values to the Table for testing
-INSERT INTO entity (entity_type_pk, label) VALUES (2, 'Iphone  Camera Design Project');
-INSERT INTO entity (entity_type_pk, label) VALUES (2, 'MacBook Costdown Project');
+INSERT INTO entity (entity_type_id, label) VALUES (2, 'Iphone  Camera Design Project');
+INSERT INTO entity (entity_type_id, label) VALUES (2, 'MacBook Costdown Project');
 -- Print
 SELECT * FROM entity;
 
@@ -34,12 +34,12 @@ DROP TABLE IF EXISTS attribute CASCADE;
 CREATE TABLE attribute 
 (
     id SERIAL PRIMARY KEY,
-    entity_type INTEGER REFERENCES entity_type (id) on DELETE CASCADE On UPDATE  CASCADE,
+    entity_type_id INTEGER REFERENCES entity_type (id) on DELETE CASCADE On UPDATE  CASCADE,
     name TEXT NOT NULL
 );
 -- Simulating User adding columns to their tables. (lets say for project table)
-INSERT INTO  attribute (entity_type, name) VALUES (2, 'Project Engineer');
-INSERT INTO  attribute (entity_type, name) VALUES (2, 'Project Manager' );
+INSERT INTO  attribute (entity_type_id, name) VALUES (2, 'Project Engineer');
+INSERT INTO  attribute (entity_type_id, name) VALUES (2, 'Project Manager' );
 
 select * from attribute;
 /*
@@ -61,7 +61,10 @@ INSERT INTO attribute_value (attribute_id, entity_id, value) VALUES (1,2,'Jacque
 INSERT INTO attribute_value (attribute_id, entity_id, value) VALUES (2,1,'John Doe');
 
 
-
+SELECT * FROM entity
+LEFT JOIN attribute_value on entity.id = attribute_value.entity_id
+LEFT JOIN attribute ON attribute_value.attribute_id = attribute.id
+WHERE entity.entity_type_id = 2;
 /*
 
 Entity
@@ -98,6 +101,13 @@ Attribute Value
 +----+--------------+-----------+-------------+--+
 | 3  | 2            | 1         | John Carry  |  |
 +----+--------------+-----------+-------------+--+
+
+First - pivot attribute.
+We want:
+
+id  Project Engineer    Project Manager   Project  Cost
+
+Then,
 
 
 We want to get...
